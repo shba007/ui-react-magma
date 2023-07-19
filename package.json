@@ -1,6 +1,6 @@
 {
   "name": "magma",
-  "description": "UI Clone of awwwwards winning site magma in React",
+  "description": "UI Clone of awwwwards winning site magma in React + Typescript + Tailwind CSS",
   "author": "Shirsendu Bairagi <shirsendu2001@gmail.com>",
   "private": true,
   "version": "0.0.0",

@@ -32,7 +32,7 @@ function App() {
         // Provide type annotations for arguments and return value
         arguments.length
           ? // @ts-ignore
-            locoScroll.scrollTo(value!, 0, 0) // Use the non-null assertion operator to handle undefined value
+            locoScroll.scrollTo(value!, 0, 0)
           : // @ts-ignore
             locoScroll.scroll.instance.scroll.y;
       },

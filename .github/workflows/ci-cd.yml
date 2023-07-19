@@ -14,11 +14,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
       - name: Detect package manager
         id: detect-package-manager
         run: |
@@ -37,23 +32,19 @@ jobs:
             exit 1
           fi
 
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
 
-      - name: Build React project
+      - name: Build project
         run: ${{ steps.detect-package-manager.outputs.manager }} run build
 
-      - name: Rename dist
-        run: mv dist magma
-
-      - name: Upload artifact to VPS
-        uses: appleboy/scp-action@master
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          port: 22
-          overwrite: true
-          source: 'magma'
-          # The path is based on the directory where the user logged into the server starts
-          target: '~/ui/react'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist

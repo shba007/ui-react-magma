@@ -15,7 +15,7 @@ export default function SectionWorkspace(props: {
   (() => {
     for (let i = 1; i < frameCount; i++) {
       const img = new Image();
-      img.src = `/${type}/frame-${i}.png`;
+      img.src = `/${type}/frame-${i}.webp`;
       images.push(img);
     }
   })();
@@ -23,6 +23,8 @@ export default function SectionWorkspace(props: {
   function drawFrame(currentFrameIndex: number) {
     const context = canvasRef.current?.getContext('2d');
     if (!context) return;
+
+    console.log(`Draw Frame`);
 
     const img = images[currentFrameIndex];
     const canvas = context.canvas;
