@@ -18,7 +18,7 @@ export default function SectionWorkspace({
   // Preload the Frames
   for (let i = 1; i < frameCount; i++) {
     const img = new Image();
-    img.src = `/${type}/frame-${i}.webp`;
+    img.src = `/ui-react-magma/${type}/frame-${i}.webp`;
     images.push(img);
   }
 

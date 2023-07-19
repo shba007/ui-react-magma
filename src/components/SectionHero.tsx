@@ -16,7 +16,7 @@ export default function SectionHero() {
       <video
         className="absolute top-0 left-0 w-screen h-screen object-cover -z-10"
         ref={videoRef}
-        src="/videos/Hero.mp4"
+        src="/ui-react-magma/videos/Hero.mp4"
         preload="auto"
         autoPlay
         loop
