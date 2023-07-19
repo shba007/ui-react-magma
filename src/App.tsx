@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState, Fragment } from 'react';
-import LocomotiveScroll from 'locomotive-scroll';
+import { useEffect, useRef, Fragment, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import LocomotiveScroll from 'locomotive-scroll';
 import 'locomotive-scroll/dist/locomotive-scroll.css';
 
 import SectionHero from './components/SectionHero';
@@ -9,70 +9,55 @@ import SectionBrief from './components/SectionBrief';
 import SectionWorkspace from './components/SectionWorkspace';
 import AppFooter from './components/AppFooter';
 
+function loco(el: HTMLElement) {
+  // Using Locomotive Scroll from Locomotive https://github.com/locomotivemtl/locomotive-scroll
+  const locoScroll = new LocomotiveScroll({
+    el,
+    smooth: true,
+  });
+  // each time Locomotive Scroll updates, tell ScrollTrigger to update too (sync positioning)
+  locoScroll.on('scroll', ScrollTrigger.update);
+
+  // tell ScrollTrigger to use these proxy methods for the "#main" element since Locomotive Scroll is hijacking things
+  ScrollTrigger.scrollerProxy('#main', {
+    scrollTop(value) {
+      // @ts-ignore
+      // prettier-ignore
+      return arguments.length ? locoScroll.scrollTo(value, 0, 0) : locoScroll.scroll.instance.scroll.y;
+    }, // we don't have to define a scrollLeft because we're only scrolling vertically.
+    getBoundingClientRect() {
+      return {
+        top: 0,
+        left: 0,
+        width: window.innerWidth,
+        height: window.innerHeight,
+      };
+    },
+    // LocomotiveScroll handles things completely differently on mobile devices - it doesn't even transform the container at all! So to get the correct behavior and avoid jitters, we should pin things with position: fixed on mobile. We sense it by checking to see if there's a transform applied to the container (the LocomotiveScroll-controlled element).
+    pinType: el.style.transform ? 'transform' : 'fixed',
+  });
+
+  // each time the window updates, we should refresh ScrollTrigger and then update LocomotiveScroll.
+  ScrollTrigger.addEventListener('refresh', () => locoScroll.update());
+
+  // after everything is set up, refresh() ScrollTrigger and update LocomotiveScroll because padding may have been added for pinning, etc.
+  ScrollTrigger.refresh();
+}
+
 function App() {
-  // const scrollRef = useLocomotiveScroll();
-  const videoRef = useRef<HTMLVideoElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [globalGsap, setGlobalGsap] = useState<typeof gsap | null>(null);
 
   useEffect(() => {
+    if (!scrollContainerRef.current) return;
     gsap.registerPlugin(ScrollTrigger);
+    loco(scrollContainerRef.current);
     setGlobalGsap(gsap);
-    // Using Locomotive Scroll from Locomotive https://github.com/locomotivemtl/locomotive-scroll
-    const locoScroll = new LocomotiveScroll({
-      el: scrollContainerRef.current!,
-      smooth: true,
-    });
-    // Each time Locomotive Scroll updates, tell ScrollTrigger to update too (sync positioning)
-    locoScroll.on('scroll', ScrollTrigger.update);
-
-    // Tell ScrollTrigger to use proxy methods for the "#main" element
-    ScrollTrigger.scrollerProxy('#main', {
-      scrollTop(value?: number): number | void {
-        // Provide type annotations for arguments and return value
-        arguments.length
-          ? // @ts-ignore
-            locoScroll.scrollTo(value!, 0, 0)
-          : // @ts-ignore
-            locoScroll.scroll.instance.scroll.y;
-      },
-      getBoundingClientRect(): DOMRect {
-        // Provide type annotation for the return value
-        return {
-          top: 0,
-          left: 0,
-          width: window.innerWidth,
-          height: window.innerHeight,
-        } as DOMRect; // Use type assertion to match the return type
-      },
-      pinType: scrollContainerRef.current?.style.transform
-        ? 'transform'
-        : 'fixed', // Use optional chaining and conditional operator
-    });
-
-    // Each time the window updates, we should refresh ScrollTrigger and then update LocomotiveScroll.
-    // @ts-ignore
-    ScrollTrigger.addEventListener('refresh', () => locoScroll.update());
-
-    // After everything is set up, refresh() ScrollTrigger and update LocomotiveScroll because padding may have been added for pinning, etc.
-    ScrollTrigger.refresh();
   }, []);
-
-  if (videoRef.current) videoRef.current.disablePictureInPicture = false;
 
   return (
     <main id="main" className="relative h-fit font-jost bg-[#183bd6]">
-      <video
-        className="absolute top-0 left-0 w-screen h-screen object-cover"
-        ref={videoRef}
-        src="/videos/Hero.mp4"
-        preload="auto"
-        autoPlay
-        loop
-        muted
-        playsInline
-      />
-      <div ref={scrollContainerRef} data-scroll data-scroll-speed="-5">
+      <div className="relative" ref={scrollContainerRef}>
         <SectionHero />
         {!!globalGsap ? (
           <Fragment>

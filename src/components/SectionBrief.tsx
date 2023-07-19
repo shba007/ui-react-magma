@@ -1,12 +1,15 @@
 import { useEffect, useRef } from 'react';
 import { gsap as g } from 'gsap';
 
-export default function SectionBrief(props: {
+export default function SectionBrief({
+  gsap,
+  title,
+  content,
+}: {
   gsap: typeof g;
   title: string;
   content: string;
 }) {
-  const { gsap, title, content } = props;
   const paraRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
@@ -15,8 +18,8 @@ export default function SectionBrief(props: {
     let clutter = '';
     paraRef.current.textContent.split('').forEach((dest) => {
       clutter += `<span>${dest}</span>`;
-      paraRef.current!.innerHTML = clutter;
     });
+    paraRef.current!.innerHTML = clutter;
 
     const el = paraRef.current.querySelectorAll('span');
     gsap.to(el, {
@@ -29,9 +32,6 @@ export default function SectionBrief(props: {
       },
       stagger: 0.2,
       color: '#fff',
-      /* onUpdate: (timeline) => {
-        console.log(timeline); //this works
-      }, */
     });
   }, []);
 

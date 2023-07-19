@@ -4,16 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Scrollbar.css */
-/* body {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-body::-webkit-scrollbar {
-  display: none;
-} */
-
 html {
   /* font-size: 0.55vw; */
   @apply text-[2.6666666667vw] lg:text-[0.55vw];

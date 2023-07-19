@@ -1,9 +1,28 @@
+import { useRef } from 'react';
 // @ts-ignore
 import { ReactComponent as IconLogo } from '../assets/logo.svg';
 
 export default function SectionHero() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  if (videoRef.current) videoRef.current.disablePictureInPicture = false;
+
   return (
-    <section className="h-screen">
+    <section
+      className="relative h-screen -z-10"
+      data-scroll
+      data-scroll-speed="-5"
+    >
+      <video
+        className="absolute top-0 left-0 w-screen h-screen object-cover -z-10"
+        ref={videoRef}
+        src="/videos/Hero.mp4"
+        preload="auto"
+        autoPlay
+        loop
+        muted
+        playsInline
+      />
       <header className="absolute top-0 left-0 right-0 px-8 lg:px-32 pt-10 lg:pt-[3.25rem]">
         <nav className="flex justify-between">
           <IconLogo className="w-[3.5rem] lg:w-[4.5rem] xl:w-[6rem] aspect-square text-white" />

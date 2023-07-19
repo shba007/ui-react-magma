@@ -1,30 +1,30 @@
 import { useEffect, useRef } from 'react';
 import { gsap as g } from 'gsap';
 
-export default function SectionWorkspace(props: {
+export default function SectionWorkspace({
+  gsap,
+  type,
+  frameCount,
+}: {
   gsap: typeof g;
   type: string;
   frameCount: number;
 }) {
-  const { gsap, type, frameCount } = props;
   const containerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const images: HTMLImageElement[] = [];
   const progress = { frame: 1 };
 
-  (() => {
-    for (let i = 1; i < frameCount; i++) {
-      const img = new Image();
-      img.src = `/${type}/frame-${i}.webp`;
-      images.push(img);
-    }
-  })();
+  // Preload the Frames
+  for (let i = 1; i < frameCount; i++) {
+    const img = new Image();
+    img.src = `/${type}/frame-${i}.webp`;
+    images.push(img);
+  }
 
   function drawFrame(currentFrameIndex: number) {
     const context = canvasRef.current?.getContext('2d');
     if (!context) return;
-
-    console.log(`Draw Frame`);
 
     const img = images[currentFrameIndex];
     const canvas = context.canvas;
