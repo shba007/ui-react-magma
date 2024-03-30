@@ -1,6 +1,5 @@
 import { useRef } from 'react';
-// @ts-ignore
-import { ReactComponent as IconLogo } from '../assets/logo.svg';
+import IconLogo from '../assets/logo.svg?react';
 
 export default function SectionHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
